@@ -2,7 +2,7 @@
     <div>
         <v-toolbar>
             <v-toolbar-items>
-                <v-btn text>Tickets</v-btn>
+                <v-btn to="/tickets/list" text>Tickets</v-btn>
                 <v-btn to="/employees/list" text>Employees</v-btn>
                 <v-btn text>Reports</v-btn>
             </v-toolbar-items>
