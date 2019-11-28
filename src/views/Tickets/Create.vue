@@ -21,12 +21,13 @@
                                 :items="
                                     $store.getters['employees/getEmployees']
                                 "
-                                v-model="ticket.id_employee"
+                                v-model="ticket.employees"
                                 label="Employee(s)"
                                 item-value="id_employee"
                                 item-text="first_name"
                                 :rules="rules.requiredInput"
                                 :loading="loadingEmployees"
+                                :multiple="true"
                             ></v-select>
                             <p>The ticket status is "OPEN" by default.</p>
                         </v-col>
@@ -81,7 +82,7 @@ export default {
             employees: [],
             ticket: {
                 subject: '',
-                id_employee: '',
+                employees: [],
                 description: ''
             },
             loadingEmployees: false,
@@ -91,13 +92,20 @@ export default {
     methods: {
         createTicket() {
             if (!this.$refs.ticketCreationForm.validate()) {
+                if(this.ticket.employees.length === 0){
+                    this.$store.commit('snackbar/setSnackbar', {
+                        show: true,
+                        message: 'Please select a employee',
+                        color: 'error',
+                        top: true
+                    });
+                }
                 return false;
             }
             this.loadingCreation = true;
             this.$store
                 .dispatch('tickets/create', this.ticket)
                 .then(response => {
-                    this.loadingCreation = false;
                     this.$router.push('/tickets/list');
                 }).catch(error=>{
                     console.log(error);
