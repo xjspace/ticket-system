@@ -1,17 +1,31 @@
 <template>
-  <v-app>
-    <v-content>
-      <router-view/>
-    </v-content>
-  </v-app>
+    <v-app>
+        <v-content>
+            <router-view />
+            <v-snackbar
+                :value="$store.state.snackbar.snackbar.show"
+                :multi-line="$store.state.snackbar.snackbar.multiLine"
+                :top="$store.state.snackbar.snackbar.top === 'top'"
+                :bottom="$store.state.snackbar.snackbar.bottom === 'bottom'"
+                :color="$store.state.snackbar.snackbar.color"
+            >
+                {{ $store.state.snackbar.snackbar.message }}
+                <v-btn
+                    dark
+                    text
+                    @click="$store.commit('snackbar/setSnackbarShow', false)"
+                    >Cerrar</v-btn
+                >
+            </v-snackbar>
+        </v-content>
+    </v-app>
 </template>
 
 <script>
-
 export default {
-  name: 'App',
-  data: () => ({
-    //
-  }),
+    name: 'App',
+    data: () => ({
+        //
+    })
 };
 </script>
