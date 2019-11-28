@@ -14,7 +14,7 @@
                     <v-col cols="12">
                         <v-data-table
                             :headers="headers"
-                            :items="tickets"
+                            :items="$store.getters['tickets/getTickets']"
                             :items-per-page="5"
                         ></v-data-table
                     ></v-col>
@@ -25,6 +25,16 @@
 </template>
 <script>
 export default {
+    mounted() {
+        this.$store
+            .dispatch('tickets/get')
+            .then(response => {
+                this.$store.commit('tickets/SET_TICKETS', response.data);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    },
     data() {
         return {
             headers: [
@@ -34,8 +44,7 @@ export default {
                 { text: 'Date', value: 'create_at' },
                 { text: 'Status', value: 'status' },
                 { text: 'Actions', value: 'actions' }
-            ],
-            tickets: []
+            ]
         };
     }
 };
