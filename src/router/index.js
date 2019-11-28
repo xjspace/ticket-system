@@ -33,6 +33,29 @@ const routes = [{
         pageTitle: 'Employees'
       }
     }]
+  },
+  {
+    path: '/tickets',
+    component: () => import('@/layouts/Main'),
+    children: [{
+        path: 'list',
+        name: 'list tickets',
+        component: () => import('@/views/Tickets/List'),
+        meta: {
+          requiredAuth: true,
+          pageTitle: 'Tickets'
+        }
+      },
+      {
+        path: 'create',
+        name: 'create ticket',
+        component: () => import('@/views/Tickets/Create'),
+        meta: {
+          requiredAuth: true,
+          pageTitle: 'Create ticket'
+        }
+      }
+    ]
   }
 ]
 
