@@ -1,4 +1,4 @@
-import httpClient from 'src/api/HttpClient'
+import httpClient from '@/api/HttpClient'
 
 export default {
     namespaced: true,
@@ -14,17 +14,17 @@ export default {
         get({
             commit
         }) {
-            return httpClient.get(`${process.env.API}/employees/employees`)
+            return httpClient.get(`/employees/employees`)
         },
         patch({
             commit
         }, payload) {
-            return httpClient.patch(`${process.env.API}/employees/employees/${payload.id_user}`, payload)
+            return httpClient.patch(`/employees/employees/${payload.id_user}`, payload)
         },
         save({
             commit
         }, payload) {
-            return httpClient.post(`${process.env.API}/employees/employees/`, payload)
+            return httpClient.post(`/employees/employees/`, payload)
         }
     },
     mutations: {
