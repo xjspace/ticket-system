@@ -10,6 +10,9 @@
             :items="$store.getters['tickets/getTimeEntries']"
             no-data-text="No times entries"
         >
+            <template v-slot:item.create_at="{ item }">
+                {{ parseTimeStamp(item.create_at,'DD/MM/YYYY h:mm:ss A') }}
+            </template>
             <template v-slot:item.actions="{ item }">
                 <v-btn
                     :to="`/users/view/${item.id_ticket}`"
@@ -52,12 +55,21 @@
                             <v-col cols="2">
                                 <p class="font-weight-bold">Ticket #</p>
                                 <p class="font-weight-bold">Subject</p>
+                                <p class="font-weight-bold">Status</p>
                                 <p class="font-weight-bold">Date</p>
                             </v-col>
                             <v-col cols="10">
                                 <p>{{ ticket.id_ticket }}</p>
                                 <p>{{ ticket.subject }}</p>
-                                <p>{{ ticket.create_at }}</p>
+                                <p>{{ ticket.status }}</p>
+                                <p>
+                                    {{
+                                        parseTimeStamp(
+                                            ticket.create_at,
+                                            'DD/MM/YYYY h:mm:ss A'
+                                        )
+                                    }}
+                                </p>
                             </v-col>
                             <v-col cols="4">
                                 <p>Time entry information</p>
@@ -78,7 +90,7 @@
                                 <v-datetime-picker
                                     label="Start date"
                                     v-model="timeEntry.from_date"
-                                    :text-field-props="{outlined: true}"
+                                    :text-field-props="{ outlined: true }"
                                 >
                                     <template slot="dateIcon">
                                         <v-icon>fa-calendar</v-icon>
@@ -92,7 +104,7 @@
                                 <v-datetime-picker
                                     label="End date"
                                     v-model="timeEntry.to_date"
-                                    :text-field-props="{outlined: true}"
+                                    :text-field-props="{ outlined: true }"
                                 >
                                     <template slot="dateIcon">
                                         <v-icon>fa-calendar</v-icon>
@@ -116,10 +128,16 @@
                         </v-row>
                     </v-card-text>
                     <v-card-actions>
-                        <v-btn color="success" @click="saveTimeEntry()" :loading="loadingSaveEntry"
+                        <v-btn
+                            color="success"
+                            @click="saveTimeEntry()"
+                            :loading="loadingSaveEntry"
                             >Save</v-btn
                         >
-                        <v-btn color="error" @click="addTimeEntryDialog = false" :loading="loadingSaveEntry"
+                        <v-btn
+                            color="error"
+                            @click="addTimeEntryDialog = false"
+                            :loading="loadingSaveEntry"
                             >Cancel</v-btn
                         >
                     </v-card-actions>
@@ -131,7 +149,7 @@
 <script>
 import deleteDialog from '@/components/Interface/DeleteDialog';
 import formRules from '@/mixins/Miscellany/FormRules';
-import moment from 'moment'
+import moment from 'moment';
 
 export default {
     props: ['ticket'],
@@ -175,9 +193,15 @@ export default {
                 });
                 return false;
             }
-            this.timeEntry.from_date = this.parseTimeStamp(this.timeEntry.from_date);
-            this.timeEntry.to_date = this.parseTimeStamp(this.timeEntry.to_date);
-            
+            this.timeEntry.from_date = this.parseTimeStamp(
+                this.timeEntry.from_date,
+                'YYYY-MM-DD h:mm:ss'
+            );
+            this.timeEntry.to_date = this.parseTimeStamp(
+                this.timeEntry.to_date,
+                'YYYY-MM-DD h:mm:ss'
+            );
+
             this.loadingSaveEntry = true;
             this.$store
                 .dispatch('tickets/createTimeEntry', {
@@ -232,10 +256,7 @@ export default {
         },
         requestTicketTimeEntries() {
             this.$store
-                .dispatch(
-                    'tickets/getTimeEntries',
-                    this.ticket.id_ticket
-                )
+                .dispatch('tickets/getTimeEntries', this.ticket.id_ticket)
                 .then(response => {
                     this.$store.commit(
                         'tickets/SET_TIME_ENTRIES',
@@ -246,8 +267,8 @@ export default {
                     console.log(error);
                 });
         },
-        parseTimeStamp(timeStamp){
-            return moment(timeStamp).format('YYYY-MM-DD h:mm:ss')
+        parseTimeStamp(timeStamp, format) {
+            return moment(timeStamp).format(format);
         }
     }
 };

@@ -12,12 +12,14 @@
                     <v-col cols="2">
                         <p class="font-weight-bold">Ticket #</p>
                         <p class="font-weight-bold">Subject</p>
+                        <p class="font-weight-bold">status</p>
                         <p class="font-weight-bold">Date</p>
                     </v-col>
                     <v-col cols="10">
                         <p>{{ ticket.id_ticket }}</p>
                         <p>{{ ticket.subject }}</p>
-                        <p>{{ ticket.create_at }}</p>
+                        <p>{{ ticket.status }}</p>
+                        <p>{{ parseTimeStamp(ticket.create_at,'DD/MM/YY h:mm:ss A') }}</p>
                     </v-col>
                     <v-col cols="12">
                         <p class="font-weight-bold">Description</p>
@@ -104,6 +106,7 @@
 import deleteDialog from '@/components/Interface/DeleteDialog';
 import assignEmployeeToTicket from '@/components/Tickets/AssignEmployeeToTicket';
 import timeEntries from '@/components/Tickets/TimeEntries'
+import moment from 'moment'
 
 export default {
     components: { deleteDialog, assignEmployeeToTicket,timeEntries },
@@ -194,6 +197,9 @@ export default {
                         console.log(error);
                     });
             }
+        },
+        parseTimeStamp(timeStamp,format){
+            return moment(timeStamp).format(format)
         }
     }
 };
