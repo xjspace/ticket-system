@@ -65,11 +65,19 @@
                         </v-row>
                     </v-card-text>
                     <v-card-actions>
-                        <v-btn color="success" :loading="loading" @click="create()">
+                        <v-btn
+                            color="success"
+                            :loading="loading"
+                            @click="create()"
+                        >
                             Save
                         </v-btn>
                         <v-spacer></v-spacer>
-                        <v-btn color="error" :loading="loading" @click="$emit('cancel-creation')">
+                        <v-btn
+                            color="error"
+                            :loading="loading"
+                            @click="$emit('cancel-creation')"
+                        >
                             Cancel
                         </v-btn>
                     </v-card-actions>
@@ -95,13 +103,35 @@ export default {
                 password: '',
                 confirmPassword: ''
             },
-            loading:false
+            loading: false
         };
     },
-    methods:{
-        create(){
-            if(this.$refs.createEmployeeForm.validate()){
-                this.$emit('save-creation')
+    methods: {
+        create() {
+            if (this.$refs.createEmployeeForm.validate()) {
+                this.loading = true;
+                this.$store
+                    .dispatch('employees/create', this.employee)
+                    .then(response => {
+                        this.$store.commit('snackbar/setSnackbar', {
+                            show: true,
+                            message: 'Employee created',
+                            color: 'success',
+                            top: true
+                        });
+                        this.$emit('confirm-creation');
+                    })
+                    .catch(error => {
+                        this.loading = false;
+                        this.$store.commit('snackbar/setSnackbar', {
+                            show: true,
+                            message:
+                                'Opss an error ocurred, please try again later',
+                            color: 'error',
+                            top: true
+                        });
+                        console.log(error);
+                    });
             }
         }
     }
