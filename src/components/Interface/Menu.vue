@@ -2,26 +2,8 @@
     <div>
         <v-toolbar>
             <v-toolbar-items>
-                <v-btn
-                    to="/tickets/list"
-                    :class="
-                        $router.currentRoute.meta.parent === 'tickets'
-                            ? 'router-link-active v-btn--active'
-                            : ''
-                    "
-                    text
-                    >Tickets</v-btn
-                >
-                <v-btn
-                    to="/employees/list"
-                    :class="
-                        $router.currentRoute.meta.parent === 'employees'
-                            ? 'router-link-active v-btn--active'
-                            : ''
-                    "
-                    text
-                    >Employees</v-btn
-                >
+                <v-btn to="/tickets/list" text>Tickets</v-btn>
+                <v-btn to="/employees/list" text>Employees</v-btn>
                 <v-btn text>Reports</v-btn>
             </v-toolbar-items>
             <template v-if="$vuetify.breakpoint.smAndUp">
