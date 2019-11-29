@@ -40,30 +40,7 @@
                 <v-tab-item>
                     <v-card flat :loading="loadingTimeEntries">
                         <v-card-text>
-                            <v-data-table
-                                :headers="timeEntriesHeaderTable"
-                                :items="
-                                    $store.getters['tickets/getTimeEntries']
-                                "
-                                no-data-text="No times entries"
-                            >
-                                <template v-slot:item.actions="{ item }">
-                                    <v-btn
-                                        :to="`/users/view/${item.id_ticket}`"
-                                        text
-                                        small
-                                        color="secondary"
-                                        >View</v-btn
-                                    >
-                                    <v-btn
-                                        text
-                                        small
-                                        color="error"
-                                        @click="toggleRemoveEmployeDialog(item)"
-                                        >Remove</v-btn
-                                    >
-                                </template>
-                            </v-data-table>
+                            <time-entries/>
                         </v-card-text>
                     </v-card>
                 </v-tab-item>
@@ -126,9 +103,10 @@
 <script>
 import deleteDialog from '@/components/Interface/DeleteDialog';
 import assignEmployeeToTicket from '@/components/Tickets/AssignEmployeeToTicket';
+import timeEntries from '@/components/Tickets/TimeEntries'
 
 export default {
-    components: { deleteDialog, assignEmployeeToTicket },
+    components: { deleteDialog, assignEmployeeToTicket,timeEntries },
     async mounted() {
         this.loadingTimeEntries = true
         await this.requestTicket();
@@ -142,12 +120,6 @@ export default {
                 { text: 'First Name', value: 'first_name' },
                 { text: 'Last Name', value: 'last_name' },
                 { text: 'Email', value: 'email' },
-                { text: 'Actions', value: 'actions' }
-            ],
-            timeEntriesHeaderTable: [
-                { text: 'Employee', value: 'employee.full_name' },
-                { text: 'Date', value: 'create_at' },
-                { text: 'Description', value: 'note' },
                 { text: 'Actions', value: 'actions' }
             ],
             showRemoveEmployeDialog: false,
