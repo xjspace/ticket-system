@@ -1,12 +1,18 @@
 <template>
     <div>
         <v-card>
+            <v-card-title primary-title>
+                <v-btn color="success" outlined class="mr-5">Edit</v-btn>
+                <v-btn color="error" @click="deleteTicket()" outlined
+                    >Delete</v-btn
+                >
+            </v-card-title>
             <v-card-text>
                 <v-row>
                     <v-col cols="2">
-                        <p>Ticket #</p>
-                        <p>Subject</p>
-                        <p>Date</p>
+                        <p class="font-weight-bold">Ticket #</p>
+                        <p class="font-weight-bold">Subject</p>
+                        <p class="font-weight-bold">Date</p>
                     </v-col>
                     <v-col cols="10">
                         <p>{{ ticket.id_ticket }}</p>
@@ -14,7 +20,7 @@
                         <p>{{ ticket.create_at }}</p>
                     </v-col>
                     <v-col cols="12">
-                        <p>Description</p>
+                        <p class="font-weight-bold">Description</p>
                         <p>{{ ticket.description }}</p>
                     </v-col>
                 </v-row>
@@ -81,7 +87,6 @@
             buttonLabelConfirm="Remove it"
             buttonLabelCancel="No, keep it"
             :show-dialog="showRemoveEmployeDialog"
-            item-name="employee"
             @confirm-delete="confirmRemoveEmploye()"
             @cancel-delete="showRemoveEmployeDialog = false"
         />
@@ -100,7 +105,7 @@ import assignEmployeeToTicket from '@/components/Tickets/AssignEmployeeToTicket'
 export default {
     components: { deleteDialog, assignEmployeeToTicket },
     mounted() {
-        this.requestTicket()
+        this.requestTicket();
     },
     data() {
         return {
@@ -142,8 +147,8 @@ export default {
                     console.log(error);
                 });
         },
-        confirmSaveEmployeeAssigned(){
-            this.showAssignEmployeeToticketDialog = false
+        confirmSaveEmployeeAssigned() {
+            this.showAssignEmployeeToticketDialog = false;
             this.requestTicket();
         },
         requestTicket() {
@@ -155,6 +160,18 @@ export default {
                 .catch(error => {
                     console.log(error);
                 });
+        },
+        deleteTicket() {
+            let request = confirm('Are you sure you want delete this ticket ?');
+            if (request) {
+                this.$store
+                    .dispatch('tickets/delete', this.ticket.id_ticket)
+                    .then(response => {
+                        this.$router.push('/tickets/list');
+                    }).catch(error =>{
+                        console.log(error)
+                    })
+            }
         }
     }
 };
