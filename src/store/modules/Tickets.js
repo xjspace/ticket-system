@@ -18,7 +18,7 @@ export default {
         },
         getById({
             commit
-        },idTicket) {
+        }, idTicket) {
             return httpClient.get(`tickets/tickets/${idTicket}`)
         },
         patch({
@@ -31,8 +31,22 @@ export default {
         }, payload) {
             return httpClient.post(`tickets/tickets`, payload)
         },
-        delete({commit},idTicket){
+        assignEmploye({
+            commit
+        }, payload) {
+            return httpClient.post(`tickets/tickets/${payload.idTicket}/employee`, {
+                employees: payload.employees
+            })
+        },
+        delete({
+            commit
+        }, idTicket) {
             return httpClient.delete(`tickets/tickets/${idTicket}`)
+        },
+        deleteAssignedEmployee({
+            commit
+        }, payload) {
+            return httpClient.delete(`tickets/tickets/${payload.idTicket}/employee/${payload.idEmployee}`)
         }
     },
     mutations: {
