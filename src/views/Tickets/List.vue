@@ -17,6 +17,9 @@
                             :items="$store.getters['tickets/getTickets']"
                             :items-per-page="5"
                         >
+                            <template v-slot:item.create_at="{ item }">
+                                {{ parseDate(item.create_at) }}
+                            </template>
                             <template v-slot:item.actions="{ item }">
                                 <v-btn
                                     :to="`/tickets/view/${item.id_ticket}`"
@@ -52,6 +55,7 @@
 </template>
 <script>
 import deleteDialog from '@/components/Interface/DeleteDialog';
+import moment from 'moment';
 
 export default {
     components: { deleteDialog },
@@ -97,6 +101,9 @@ export default {
                 .catch(error => {
                     console.log(error);
                 });
+        },
+        parseDate(date) {
+            return moment(date).format('DD/MM/YYYY');
         }
     }
 };
