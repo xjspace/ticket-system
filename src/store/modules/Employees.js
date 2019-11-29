@@ -21,7 +21,7 @@ export default {
         }, payload) {
             return httpClient.patch(`/employees/employees/${payload.id_user}`, payload)
         },
-        save({
+        create({
             commit
         }, payload) {
             return httpClient.post(`/employees/employees/`, payload)
