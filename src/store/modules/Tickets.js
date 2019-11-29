@@ -59,6 +59,9 @@ export default {
             commit
         }, payload) {
             return httpClient.delete(`tickets/tickets/${payload.idTicket}/employee/${payload.idEmployee}`)
+        },
+        deleteTimeEntry({commit},payload){
+            return httpClient.delete(`tickets/tickets/${payload.idTicket}/time-entries/${payload.idEntry}`)
         }
     },
     mutations: {
