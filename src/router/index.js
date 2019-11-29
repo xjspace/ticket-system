@@ -54,6 +54,15 @@ const routes = [{
           requiredAuth: true,
           pageTitle: 'Create ticket'
         }
+      },
+      {
+        path: 'view/:id',
+          name: 'view ticket',
+          component: () => import('@/views/Tickets/View'),
+          meta: {
+            requiredAuth: true,
+            pageTitle: 'View ticket'
+          }
       }
     ]
   }
