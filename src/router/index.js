@@ -30,7 +30,8 @@ const routes = [{
       component: () => import('@/views/Employees/List'),
       meta: {
         requiredAuth: true,
-        pageTitle: 'Employees'
+        pageTitle: 'Employees',
+        parent: 'employees'
       }
     }]
   },
@@ -43,7 +44,8 @@ const routes = [{
         component: () => import('@/views/Tickets/List'),
         meta: {
           requiredAuth: true,
-          pageTitle: 'Tickets'
+          pageTitle: 'Tickets',
+          parent: 'tickets'
         }
       },
       {
@@ -52,7 +54,8 @@ const routes = [{
         component: () => import('@/views/Tickets/Create'),
         meta: {
           requiredAuth: true,
-          pageTitle: 'Create ticket'
+          pageTitle: 'Create ticket',
+          parent: 'tickets'
         }
       },
       {
@@ -61,7 +64,8 @@ const routes = [{
           component: () => import('@/views/Tickets/View'),
           meta: {
             requiredAuth: true,
-            pageTitle: 'View ticket'
+            pageTitle: 'View ticket',
+            parent: 'tickets'
           }
       }
     ]
