@@ -3,11 +3,18 @@ import httpClient from '@/api/HttpClient'
 export default {
     namespaced: true,
     state: {
-        tickets: []
+        tickets: [],
+        timeEntries: []
     },
     getters: {
         getTickets(state) {
             return state.tickets
+        },
+        getTimeEntries(state){
+            state.timeEntries.forEach(entry => {
+                entry.employee.full_name = `${entry.employee.first_name} ${entry.employee.last_name}`
+            });
+            return state.timeEntries
         }
     },
     actions: {
@@ -21,6 +28,11 @@ export default {
         }, idTicket) {
             return httpClient.get(`tickets/tickets/${idTicket}`)
         },
+        getTimeEntries({
+            commit
+        }, idTicket) {
+            return httpClient.get(`tickets/tickets/${idTicket}/time-entries`)
+        },
         patch({
             commit
         }, payload) {
@@ -30,6 +42,9 @@ export default {
             commit
         }, payload) {
             return httpClient.post(`tickets/tickets`, payload)
+        },
+        createTimeEntry({commit},payload){
+            return httpClient.post(`tickets/tickets/${payload.idTicket}/time-entries`, payload.timeEntry)
         },
         assignEmploye({
             commit
@@ -47,11 +62,17 @@ export default {
             commit
         }, payload) {
             return httpClient.delete(`tickets/tickets/${payload.idTicket}/employee/${payload.idEmployee}`)
+        },
+        deleteTimeEntry({commit},payload){
+            return httpClient.delete(`tickets/tickets/${payload.idTicket}/time-entries/${payload.idEntry}`)
         }
     },
     mutations: {
         SET_TICKETS(state, payload) {
             state.tickets = payload
+        },
+        SET_TIME_ENTRIES(state, payload) {
+            state.timeEntries = payload
         }
     }
 }

@@ -28,7 +28,7 @@
         </v-card>
         <v-card class="mt-2">
             <v-tabs v-model="tab" grow>
-                <v-tab>
+                <v-tab @click="requestTicketTimeEntries()">
                     Time Entries
                 </v-tab>
                 <v-tab>
@@ -38,8 +38,10 @@
 
             <v-tabs-items v-model="tab">
                 <v-tab-item>
-                    <v-card flat>
-                        <v-card-text>Some entries</v-card-text>
+                    <v-card flat :loading="loadingTimeEntries">
+                        <v-card-text>
+                            <time-entries :ticket="ticket"/>
+                        </v-card-text>
                     </v-card>
                 </v-tab-item>
                 <v-tab-item>
@@ -65,7 +67,7 @@
                                         text
                                         small
                                         color="secondary"
-                                        >View</v-btn
+                                        >Edit</v-btn
                                     >
                                     <v-btn
                                         text
@@ -101,11 +103,14 @@
 <script>
 import deleteDialog from '@/components/Interface/DeleteDialog';
 import assignEmployeeToTicket from '@/components/Tickets/AssignEmployeeToTicket';
+import timeEntries from '@/components/Tickets/TimeEntries'
 
 export default {
-    components: { deleteDialog, assignEmployeeToTicket },
-    mounted() {
-        this.requestTicket();
+    components: { deleteDialog, assignEmployeeToTicket,timeEntries },
+    async mounted() {
+        this.loadingTimeEntries = true
+        await this.requestTicket();
+        this.requestTicketTimeEntries()
     },
     data() {
         return {
@@ -119,7 +124,8 @@ export default {
             ],
             showRemoveEmployeDialog: false,
             showAssignEmployeeToticketDialog: false,
-            tempEmployeForRemove: {}
+            tempEmployeForRemove: {},
+            loadingTimeEntries: false
         };
     },
     methods: {
@@ -151,8 +157,8 @@ export default {
             this.showAssignEmployeeToticketDialog = false;
             this.requestTicket();
         },
-        requestTicket() {
-            this.$store
+        async requestTicket() {
+            return this.$store
                 .dispatch('tickets/getById', this.$route.params.id)
                 .then(response => {
                     this.ticket = response.data;
@@ -161,6 +167,21 @@ export default {
                     console.log(error);
                 });
         },
+        requestTicketTimeEntries() {
+            this.loadingTimeEntries = true
+            this.$store
+                .dispatch('tickets/getTimeEntries', this.ticket.id_ticket)
+                .then(response => {
+                    this.$store.commit(
+                        'tickets/SET_TIME_ENTRIES',
+                        response.data
+                    );
+                }).catch(error=>{
+                    console.log(error)
+                }).finally(()=>{
+                    this.loadingTimeEntries = false
+                })
+        },
         deleteTicket() {
             let request = confirm('Are you sure you want delete this ticket ?');
             if (request) {
@@ -168,9 +189,10 @@ export default {
                     .dispatch('tickets/delete', this.ticket.id_ticket)
                     .then(response => {
                         this.$router.push('/tickets/list');
-                    }).catch(error =>{
-                        console.log(error)
                     })
+                    .catch(error => {
+                        console.log(error);
+                    });
             }
         }
     }
