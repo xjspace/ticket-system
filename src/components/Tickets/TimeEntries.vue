@@ -87,7 +87,6 @@
                                         <v-icon>fa-clock</v-icon>
                                     </template>
                                 </v-datetime-picker>
-                                <pre>{{timeEntry.from_date}}</pre>
                             </v-col>
                             <v-col cols="6">
                                 <v-datetime-picker
