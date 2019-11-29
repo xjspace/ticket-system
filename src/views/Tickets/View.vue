@@ -40,7 +40,7 @@
                 <v-tab-item>
                     <v-card flat :loading="loadingTimeEntries">
                         <v-card-text>
-                            <time-entries/>
+                            <time-entries :ticket="ticket"/>
                         </v-card-text>
                     </v-card>
                 </v-tab-item>
