@@ -16,8 +16,14 @@
                             :headers="headers"
                             :items="$store.getters['tickets/getTickets']"
                             :items-per-page="5"
-                        ></v-data-table
-                    ></v-col>
+                        >
+                            <template v-slot:item.actions="{ item }">
+                                <v-btn :to="`/tickets/view/${item.id_ticket}`" text small color="secondary">View</v-btn>
+                                <v-btn text small color="secondary">Edit</v-btn>
+                                <v-btn text small color="error">Delete</v-btn>
+                            </template>
+                        </v-data-table></v-col
+                    >
                 </v-row>
             </v-card-text>
         </v-card>
