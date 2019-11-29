@@ -43,6 +43,9 @@ export default {
         }, payload) {
             return httpClient.post(`tickets/tickets`, payload)
         },
+        createTimeEntry({commit},payload){
+            return httpClient.post(`tickets/tickets/${payload.idTicket}/time-entries`, payload.timeEntry)
+        },
         assignEmploye({
             commit
         }, payload) {
