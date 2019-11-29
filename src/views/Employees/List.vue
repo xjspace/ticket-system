@@ -14,7 +14,7 @@
                     <v-col cols="12">
                         <v-data-table
                             :headers="headers"
-                            :items="employes"
+                            :items="$store.getters['employees/getEmployees']"
                             :items-per-page="5"
                         ></v-data-table
                     ></v-col>
@@ -23,29 +23,31 @@
         </v-card>
         <create-employee-dialog
             @cancel-creation="closeCreationEmployeDialog()"
-            @save-creation="closeCreationEmployeDialog()"
+            @confirm-creation="confirmEmployeeCreation()"
             :showDialog="showCreationEmployeDialog"
         />
     </div>
 </template>
 <script>
-import createEmployeeDialog from "@/components/Employees/CreateDialog";
+import createEmployeeDialog from '@/components/Employees/CreateDialog';
 
 export default {
     components: { createEmployeeDialog },
+    mounted() {
+        this.requestEmployees();
+    },
     data() {
         return {
             headers: [
-                { text: "ID", align: "left", value: "id_employe" },
-                { text: "First Name", value: "first_name" },
-                { text: "Last Name", value: "last_name" },
-                { text: "Email", value: "email" },
-                { text: "Date Created", value: "create_at" },
-                { text: "Status", value: "status" },
-                { text: "Role", value: "role" },
-                { text: "Actions", value: "actions" }
+                { text: 'ID', align: 'left', value: 'id_employe' },
+                { text: 'First Name', value: 'first_name' },
+                { text: 'Last Name', value: 'last_name' },
+                { text: 'Email', value: 'email' },
+                { text: 'Date Created', value: 'create_at' },
+                { text: 'Status', value: 'status' },
+                { text: 'Role', value: 'role' },
+                { text: 'Actions', value: 'actions' }
             ],
-            employes: [],
             showCreationEmployeDialog: false
         };
     },
@@ -55,6 +57,15 @@ export default {
         },
         openCreationEmployeDialog() {
             this.showCreationEmployeDialog = true;
+        },
+        requestEmployees() {
+            this.$store.dispatch('employees/get').then(response => {
+                this.$store.commit('employees/SET_EMPLOYEES', response.data);
+            });
+        },
+        confirmEmployeeCreation(){
+            this.showCreationEmployeDialog = false
+            this.requestEmployees()
         }
     }
 };
