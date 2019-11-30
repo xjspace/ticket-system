@@ -60,16 +60,30 @@ const routes = [{
       },
       {
         path: 'view/:id',
-          name: 'view ticket',
-          component: () => import('@/views/Tickets/View'),
-          meta: {
-            requiredAuth: true,
-            pageTitle: 'View ticket',
-            parent: 'tickets'
-          }
+        name: 'view ticket',
+        component: () => import('@/views/Tickets/View'),
+        meta: {
+          requiredAuth: true,
+          pageTitle: 'View ticket',
+          parent: 'tickets'
+        }
       }
     ]
-  }
+  },
+  {
+    path: '/reports',
+    component: () => import('@/layouts/Main'),
+    children: [{
+      path: 'employees',
+      name: 'employees report',
+      component: () => import('@/views/Reports/Employees'),
+      meta: {
+        requiredAuth: true,
+        pageTitle: 'Employees report',
+        parent: 'reports'
+      }
+    }]
+  },
 ]
 
 const router = new VueRouter({
