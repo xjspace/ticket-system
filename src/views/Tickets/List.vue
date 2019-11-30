@@ -22,6 +22,14 @@
                             </template>
                             <template v-slot:item.actions="{ item }">
                                 <v-btn
+                                    text
+                                    small
+                                    color="secondary"
+                                    @click="showAddNoteDialog(item)"
+                                >
+                                    Add note
+                                </v-btn>
+                                <v-btn
                                     :to="`/tickets/view/${item.id_ticket}`"
                                     text
                                     small
@@ -51,14 +59,26 @@
             @confirm-delete="deleteTicket()"
             @cancel-delete="showDeleteDialog = false"
         />
+        <v-dialog v-model="addNotedialog" max-width="400">
+            <v-card>
+                <v-card-text>
+                    <create-notes
+                        @note-created="addNotedialog = false"
+                        :ticket="TempTicketForAddNote"
+                    />
+                    Click outside this modal for close it
+                </v-card-text>
+            </v-card>
+        </v-dialog>
     </div>
 </template>
 <script>
 import deleteDialog from '@/components/Interface/DeleteDialog';
+import createNotes from '@/components/Tickets/Notes/Create';
 import moment from 'moment';
 
 export default {
-    components: { deleteDialog },
+    components: { deleteDialog, createNotes },
     mounted() {
         this.requestTickets();
     },
@@ -73,7 +93,9 @@ export default {
                 { text: 'Actions', value: 'actions' }
             ],
             showDeleteDialog: false,
-            tempTicketToDelete: {}
+            tempTicketToDelete: {},
+            addNotedialog: false,
+            TempTicketForAddNote: ''
         };
     },
     methods: {
@@ -101,6 +123,10 @@ export default {
                 .catch(error => {
                     console.log(error);
                 });
+        },
+        showAddNoteDialog(ticket) {
+            this.TempTicketForAddNote = ticket;
+            this.addNotedialog = true;
         },
         parseDate(date) {
             return moment(date).format('DD/MM/YYYY');
