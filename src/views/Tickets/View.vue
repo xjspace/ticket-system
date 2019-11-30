@@ -2,7 +2,13 @@
     <div>
         <v-card>
             <v-card-title primary-title>
-                <v-btn color="success" outlined class="mr-5">Edit</v-btn>
+                <v-btn
+                    color="success"
+                    outlined
+                    class="mr-5"
+                    @click="showEditTicketDialog"
+                    >Edit</v-btn
+                >
                 <v-btn color="error" @click="deleteTicket()" outlined
                     >Delete</v-btn
                 >
@@ -116,6 +122,24 @@
             :show="showAssignEmployeeToticketDialog"
             :ticket="ticket"
         />
+        <v-dialog v-model="editTicketDialog" max-width="400">
+            <v-card>
+                <v-card-title>
+                    <v-spacer></v-spacer>
+                    <v-icon
+                        class="float-right"
+                        @click="editTicketDialog = false"
+                        >fa-window-close</v-icon
+                    >
+                </v-card-title>
+                <v-card-text>
+                    <edit-ticket
+                        @ticket-updated="confirmTicketUpdated()"
+                        :ticket="tempTicketForEdit"
+                    />
+                </v-card-text>
+            </v-card>
+        </v-dialog>
     </div>
 </template>
 <script>
@@ -124,6 +148,7 @@ import assignEmployeeToTicket from '@/components/Tickets/AssignEmployeeToTicket'
 import timeEntries from '@/components/Tickets/TimeEntries';
 import notesList from '@/components/Tickets/Notes/List';
 import createNotes from '@/components/Tickets/Notes/Create';
+import editTicket from '@/components/Tickets/Edit';
 import moment from 'moment';
 
 export default {
@@ -132,7 +157,8 @@ export default {
         assignEmployeeToTicket,
         timeEntries,
         notesList,
-        createNotes
+        createNotes,
+        editTicket
     },
     async mounted() {
         this.loadingTimeEntries = true;
@@ -153,13 +179,19 @@ export default {
             showRemoveEmployeDialog: false,
             showAssignEmployeeToticketDialog: false,
             tempEmployeForRemove: {},
-            loadingTimeEntries: false
+            loadingTimeEntries: false,
+            editTicketDialog: false,
+            tempTicketForEdit: ''
         };
     },
     methods: {
         toggleRemoveEmployeDialog(employee) {
             this.showRemoveEmployeDialog = true;
             this.tempEmployeForRemove = employee;
+        },
+        showEditTicketDialog() {
+            this.tempTicketForEdit = this.ticket;
+            this.editTicketDialog = true;
         },
         confirmRemoveEmploye() {
             this.showRemoveEmployeDialog = false;
@@ -237,6 +269,10 @@ export default {
                 .catch(error => {
                     console.log(error);
                 });
+        },
+        confirmTicketUpdated(){
+            this.requestTicket()
+            this.editTicketDialog = false
         }
     }
 };
