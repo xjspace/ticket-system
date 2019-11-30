@@ -22,7 +22,16 @@
                             </template>
                             <template v-slot:item.actions="{ item }">
                                 <v-btn text small color="secondary">View</v-btn>
-                                <v-btn text small color="secondary" @click="openEditEmployeeDialog(item)">Edit</v-btn>
+                                <v-btn
+                                    text
+                                    small
+                                    color="secondary"
+                                    :to="{
+                                        name: 'edit employee',
+                                        params: { id: item.id_employee }
+                                    }"
+                                    >Edit</v-btn
+                                >
                                 <v-btn text small color="error"
                                     >Desactive</v-btn
                                 >
@@ -40,18 +49,6 @@
             >
                 <maintenance-form-employees
                     @cancel-creation="closeCreationEmployeDialog()"
-                    @confirm-creation="confirmEmployeeCreation()"
-                />
-            </v-dialog>
-        </v-row>
-        <v-row justify="center">
-            <v-dialog
-                v-model="showEditEmployeDialog"
-                persistent
-                max-width="500"
-            >
-                <maintenance-form-employees
-                    @cancel-creation="showEditEmployeDialog = false"
                     @confirm-creation="confirmEmployeeCreation()"
                 />
             </v-dialog>
@@ -77,11 +74,9 @@ export default {
                 { text: 'Date Created', value: 'create_at' },
                 { text: 'Status', value: 'status' },
                 { text: 'Role', value: 'role' },
-                { text: 'Actions', value: 'actions', sortable:false }
+                { text: 'Actions', value: 'actions', sortable: false }
             ],
-            showCreationEmployeDialog: false,
-            tempEmployeeForEdit: [],
-            showEditEmployeDialog: false
+            showCreationEmployeDialog: false
         };
     },
     methods: {
@@ -90,10 +85,6 @@ export default {
         },
         openCreationEmployeDialog() {
             this.showCreationEmployeDialog = true;
-        },
-        openEditEmployeeDialog(employee){
-            this.tempEmployeeForEdit = employee
-            this.showEditEmployeDialog = true
         },
         requestEmployees() {
             this.$store.dispatch('employees/get').then(response => {
