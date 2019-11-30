@@ -21,7 +21,7 @@
                                 {{
                                     parseDate(
                                         item.create_at,
-                                        'DD-MM-YYYY'
+                                        'DD/MM/YYYY'
                                     )
                                 }}
                             </template>
