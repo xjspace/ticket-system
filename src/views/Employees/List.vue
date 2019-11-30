@@ -18,38 +18,59 @@
                             :items-per-page="5"
                         >
                             <template v-slot:item.create_at="{ item }">
-                                {{
-                                    parseDate(
-                                        item.create_at,
-                                        'DD/MM/YYYY'
-                                    )
-                                }}
+                                {{ parseDate(item.create_at, 'DD/MM/YYYY') }}
                             </template>
-                        </v-data-table></v-col
-                    >
+                            <template v-slot:item.actions="{ item }">
+                                <v-btn text small color="secondary">View</v-btn>
+                                <v-btn text small color="secondary" @click="openEditEmployeeDialog(item)">Edit</v-btn>
+                                <v-btn text small color="error"
+                                    >Desactive</v-btn
+                                >
+                            </template>
+                        </v-data-table>
+                    </v-col>
                 </v-row>
             </v-card-text>
         </v-card>
-        <create-employee-dialog
-            @cancel-creation="closeCreationEmployeDialog()"
-            @confirm-creation="confirmEmployeeCreation()"
-            :showDialog="showCreationEmployeDialog"
-        />
+        <v-row justify="center">
+            <v-dialog
+                v-model="showCreationEmployeDialog"
+                persistent
+                max-width="500"
+            >
+                <maintenance-form-employees
+                    @cancel-creation="closeCreationEmployeDialog()"
+                    @confirm-creation="confirmEmployeeCreation()"
+                />
+            </v-dialog>
+        </v-row>
+        <v-row justify="center">
+            <v-dialog
+                v-model="showEditEmployeDialog"
+                persistent
+                max-width="500"
+            >
+                <maintenance-form-employees
+                    @cancel-creation="showEditEmployeDialog = false"
+                    @confirm-creation="confirmEmployeeCreation()"
+                />
+            </v-dialog>
+        </v-row>
     </div>
 </template>
 <script>
-import createEmployeeDialog from '@/components/Employees/CreateDialog';
+import MaintenanceFormEmployees from '@/components/Employees/MaintenanceForm';
 import moment from 'moment';
 
 export default {
-    components: { createEmployeeDialog },
+    components: { MaintenanceFormEmployees },
     mounted() {
         this.requestEmployees();
     },
     data() {
         return {
             headers: [
-                { text: 'ID', align: 'left', value: 'id_employe' },
+                { text: 'ID', align: 'left', value: 'id_employee' },
                 { text: 'First Name', value: 'first_name' },
                 { text: 'Last Name', value: 'last_name' },
                 { text: 'Email', value: 'email' },
@@ -58,7 +79,9 @@ export default {
                 { text: 'Role', value: 'role' },
                 { text: 'Actions', value: 'actions' }
             ],
-            showCreationEmployeDialog: false
+            showCreationEmployeDialog: false,
+            tempEmployeeForEdit: [],
+            showEditEmployeDialog: false
         };
     },
     methods: {
@@ -67,6 +90,10 @@ export default {
         },
         openCreationEmployeDialog() {
             this.showCreationEmployeDialog = true;
+        },
+        openEditEmployeeDialog(employee){
+            this.tempEmployeeForEdit = employee
+            this.showEditEmployeDialog = true
         },
         requestEmployees() {
             this.$store.dispatch('employees/get').then(response => {
