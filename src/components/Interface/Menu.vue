@@ -4,18 +4,27 @@
             <v-toolbar-items>
                 <v-btn to="/tickets/list" text>Tickets</v-btn>
                 <v-btn to="/employees/list" text>Employees</v-btn>
-                <v-btn text>Reports</v-btn>
+                <v-btn to="/reports/employees" text>Reports</v-btn>
             </v-toolbar-items>
             <template v-if="$vuetify.breakpoint.smAndUp">
-                <v-btn icon>
-                    <v-icon>mdi-export-variant</v-icon>
-                </v-btn>
-                <v-btn icon>
-                    <v-icon>mdi-delete-circle</v-icon>
-                </v-btn>
-                <v-btn icon>
-                    <v-icon>mdi-plus-circle</v-icon>
-                </v-btn>
+                <v-spacer></v-spacer>
+                <v-menu offset-y>
+                    <template v-slot:activator="{ on }">
+                        <v-btn text v-on="on">
+                            <v-icon class="mr-2">fa-user</v-icon>
+                            {{ $store.getters['auth/getEmployee'].first_name }}
+                        </v-btn>
+                    </template>
+                    <v-list>
+                        <v-list-item>
+                            <v-list-item-title
+                                ><v-btn text to="/auth/logout"
+                                    >Logout</v-btn
+                                ></v-list-item-title
+                            >
+                        </v-list-item>
+                    </v-list>
+                </v-menu>
             </template>
         </v-toolbar>
     </div>

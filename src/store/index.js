@@ -5,6 +5,7 @@ import snackbar from './modules/Snackbar'
 import tickets from './modules/Tickets'
 import employees from './modules/Employees'
 import notes from './modules/Notes'
+import reports from './modules/Reports'
 
 Vue.use(Vuex)
 
@@ -14,6 +15,7 @@ export default new Vuex.Store({
     snackbar,
     tickets,
     employees,
-    notes
+    notes,
+    reports
   }
 })
