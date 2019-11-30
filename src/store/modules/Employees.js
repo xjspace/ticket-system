@@ -16,10 +16,15 @@ export default {
         }) {
             return httpClient.get(`/employees/employees`)
         },
+        getById({
+            commit
+        }, idEmployee) {
+            return httpClient.get(`/employees/employees/${idEmployee}`)
+        },
         patch({
             commit
         }, payload) {
-            return httpClient.patch(`/employees/employees/${payload.id_user}`, payload)
+            return httpClient.patch(`/employees/employees/${payload.id_user}`, payload.employee)
         },
         create({
             commit

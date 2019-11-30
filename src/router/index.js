@@ -47,6 +47,15 @@ const routes = [{
         pageTitle: 'Employees',
         parent: 'employees'
       }
+    }, {
+      path: 'edit/:id',
+      name: 'edit employee',
+      component: () => import('@/views/Employees/Edit'),
+      meta: {
+        requiredAuth: true,
+        pageTitle: 'Edit Employee',
+        parent: 'employees'
+      }
     }]
   },
   {
