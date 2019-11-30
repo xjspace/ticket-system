@@ -1,9 +1,13 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import store from '@/store/index'
 
 Vue.use(VueRouter)
 
 const routes = [{
+    path: '*',
+    redirect: '/auth/login'
+  }, {
     path: '/',
     name: 'home',
     redirect: '/auth/login'
@@ -12,14 +16,24 @@ const routes = [{
     path: '/auth',
     component: () => import('@/layouts/Auth'),
     children: [{
-      path: 'login',
-      name: 'login',
-      component: () => import('@/views/Auth/Login'),
-      meta: {
-        requiredAuth: false,
-        pageTitle: 'Login'
+        path: 'login',
+        name: 'login',
+        component: () => import('@/views/Auth/Login'),
+        meta: {
+          requiredAuth: false,
+          pageTitle: 'Login'
+        },
+      },
+      {
+        path: 'logout',
+        name: 'logout',
+        component: () => import('@/views/Auth/Logout'),
+        meta: {
+          requiredAuth: true,
+          pageTitle: 'Logout'
+        }
       }
-    }]
+    ]
   },
   {
     path: '/employees',
@@ -94,7 +108,24 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   document.title = to.meta.pageTitle;
-  next()
+
+  const token = window.localStorage.getItem('token');
+
+  if (to.meta.requiredAuth) {
+    if (token === null)
+      next('/auth/login');
+    else {
+      store.commit('auth/SET_EMPLOYEE', JSON.parse(window.localStorage.getItem('employee')));
+      next();
+    }
+
+  } else {
+    if (token === null)
+      next();
+    else {
+      next('/tickets/list');
+    }
+  }
 })
 
 export default router
