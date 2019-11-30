@@ -87,7 +87,7 @@ export default {
             headers: [
                 { text: '#', align: 'left', value: 'id_ticket' },
                 { text: 'Description', value: 'description' },
-                { text: 'Employee(s)', value: 'employees' },
+                { text: 'Employee(s)', value: 'all_employees' },
                 { text: 'Date', value: 'create_at' },
                 { text: 'Status', value: 'status' },
                 { text: 'Actions', value: 'actions' }
