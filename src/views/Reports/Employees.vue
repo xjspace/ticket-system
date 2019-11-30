@@ -146,7 +146,7 @@ export default {
                 item.employee = `${item.first_name} ${item.last_name}`;
                 let a = moment(item.from_date);
                 let b = moment(item.to_date);
-                item.hours = a.diff(b, 'hours', true);
+                item.hours = b.diff(a, 'hours', true).toFixed(1);
                 results.push(item);
             });
             return results;
