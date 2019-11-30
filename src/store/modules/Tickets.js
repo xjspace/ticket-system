@@ -43,7 +43,7 @@ export default {
         patch({
             commit
         }, payload) {
-            return httpClient.patch(`tickets/tickets/${payload.id_user}`, payload)
+            return httpClient.patch(`tickets/tickets/${payload.id_ticket}`, payload.ticket)
         },
         create({
             commit
