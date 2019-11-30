@@ -86,7 +86,7 @@ export default {
         return {
             headers: [
                 { text: '#', align: 'left', value: 'id_ticket' },
-                { text: 'Description', value: 'description' },
+                { text: 'Subject', value: 'subject' },
                 { text: 'Employee(s)', value: 'all_employees' },
                 { text: 'Date', value: 'create_at' },
                 { text: 'Status', value: 'status' },
