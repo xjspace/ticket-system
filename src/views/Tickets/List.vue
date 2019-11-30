@@ -36,7 +36,13 @@
                                     color="secondary"
                                     >View</v-btn
                                 >
-                                <v-btn text small color="secondary">Edit</v-btn>
+                                <v-btn
+                                    text
+                                    small
+                                    color="secondary"
+                                    @click="showEditTicketDialog(item)"
+                                    >Edit</v-btn
+                                >
                                 <v-btn
                                     text
                                     small
@@ -61,12 +67,35 @@
         />
         <v-dialog v-model="addNotedialog" max-width="400">
             <v-card>
+                <v-card-title>
+                    <v-spacer></v-spacer>
+                    <v-icon class="float-right" @click="addNotedialog = false"
+                        >fa-window-close</v-icon
+                    >
+                </v-card-title>
                 <v-card-text>
                     <create-notes
                         @note-created="addNotedialog = false"
                         :ticket="TempTicketForAddNote"
                     />
-                    Click outside this modal for close it
+                </v-card-text>
+            </v-card>
+        </v-dialog>
+        <v-dialog v-model="editTicketDialog" max-width="400">
+            <v-card>
+                <v-card-title>
+                    <v-spacer></v-spacer>
+                    <v-icon
+                        class="float-right"
+                        @click="editTicketDialog = false"
+                        >fa-window-close</v-icon
+                    >
+                </v-card-title>
+                <v-card-text>
+                    <edit-ticket
+                        @ticket-updated="confirmTicketUpdated()"
+                        :ticket="tempTicketForEdit"
+                    />
                 </v-card-text>
             </v-card>
         </v-dialog>
@@ -75,10 +104,11 @@
 <script>
 import deleteDialog from '@/components/Interface/DeleteDialog';
 import createNotes from '@/components/Tickets/Notes/Create';
+import editTicket from '@/components/Tickets/Edit';
 import moment from 'moment';
 
 export default {
-    components: { deleteDialog, createNotes },
+    components: { deleteDialog, createNotes, editTicket },
     mounted() {
         this.requestTickets();
     },
@@ -95,7 +125,9 @@ export default {
             showDeleteDialog: false,
             tempTicketToDelete: {},
             addNotedialog: false,
-            TempTicketForAddNote: ''
+            TempTicketForAddNote: '',
+            editTicketDialog: false,
+            tempTicketForEdit: ''
         };
     },
     methods: {
@@ -127,6 +159,14 @@ export default {
         showAddNoteDialog(ticket) {
             this.TempTicketForAddNote = ticket;
             this.addNotedialog = true;
+        },
+        showEditTicketDialog(ticket) {
+            this.tempTicketForEdit = ticket;
+            this.editTicketDialog = true;
+        },
+        confirmTicketUpdated() {
+            this.requestTickets()
+            this.editTicketDialog = false;
         },
         parseDate(date) {
             return moment(date).format('DD/MM/YYYY');
