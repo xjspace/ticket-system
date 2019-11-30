@@ -113,7 +113,6 @@ export default {
                         this.$emit('confirm-creation');
                     })
                     .catch(error => {
-                        this.loading = false;
                         this.$store.commit('snackbar/setSnackbar', {
                             show: true,
                             message:
@@ -122,7 +121,9 @@ export default {
                             top: true
                         });
                         console.log(error);
-                    });
+                    }).finally(()=>{
+                        this.loading = false
+                    })
             }
         }
     }
