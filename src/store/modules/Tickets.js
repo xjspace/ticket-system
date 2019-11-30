@@ -8,9 +8,16 @@ export default {
     },
     getters: {
         getTickets(state) {
+            state.tickets.forEach(ticket => {
+                ticket.employees.forEach(employee => {
+                    ticket.all_employees = (ticket.all_employees === undefined) ?
+                        `${employee.first_name} ${employee.last_name}` :
+                        ticket.all_employees + ` - ${employee.first_name} ${employee.last_name}`
+                })
+            })
             return state.tickets
         },
-        getTimeEntries(state){
+        getTimeEntries(state) {
             state.timeEntries.forEach(entry => {
                 entry.employee.full_name = `${entry.employee.first_name} ${entry.employee.last_name}`
             });
@@ -43,7 +50,9 @@ export default {
         }, payload) {
             return httpClient.post(`tickets/tickets`, payload)
         },
-        createTimeEntry({commit},payload){
+        createTimeEntry({
+            commit
+        }, payload) {
             return httpClient.post(`tickets/tickets/${payload.idTicket}/time-entries`, payload.timeEntry)
         },
         assignEmploye({
@@ -63,7 +72,9 @@ export default {
         }, payload) {
             return httpClient.delete(`tickets/tickets/${payload.idTicket}/employee/${payload.idEmployee}`)
         },
-        deleteTimeEntry({commit},payload){
+        deleteTimeEntry({
+            commit
+        }, payload) {
             return httpClient.delete(`tickets/tickets/${payload.idTicket}/time-entries/${payload.idEntry}`)
         }
     },
