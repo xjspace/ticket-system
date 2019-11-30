@@ -77,7 +77,7 @@ export default {
                 { text: 'Date Created', value: 'create_at' },
                 { text: 'Status', value: 'status' },
                 { text: 'Role', value: 'role' },
-                { text: 'Actions', value: 'actions' }
+                { text: 'Actions', value: 'actions', sortable:false }
             ],
             showCreationEmployeDialog: false,
             tempEmployeeForEdit: [],
