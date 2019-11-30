@@ -4,7 +4,7 @@
             <v-toolbar-items>
                 <v-btn to="/tickets/list" text>Tickets</v-btn>
                 <v-btn to="/employees/list" text>Employees</v-btn>
-                <v-btn text>Reports</v-btn>
+                <v-btn to="/reports/employees" text>Reports</v-btn>
             </v-toolbar-items>
             <template v-if="$vuetify.breakpoint.smAndUp">
                 <v-btn icon>
