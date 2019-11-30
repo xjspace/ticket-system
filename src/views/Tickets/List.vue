@@ -17,7 +17,18 @@
                             :items="$store.getters['tickets/getTickets']"
                             :items-per-page="5"
                         >
+                            <template v-slot:item.create_at="{ item }">
+                                {{ parseDate(item.create_at) }}
+                            </template>
                             <template v-slot:item.actions="{ item }">
+                                <v-btn
+                                    text
+                                    small
+                                    color="secondary"
+                                    @click="showAddNoteDialog(item)"
+                                >
+                                    Add note
+                                </v-btn>
                                 <v-btn
                                     :to="`/tickets/view/${item.id_ticket}`"
                                     text
@@ -25,7 +36,13 @@
                                     color="secondary"
                                     >View</v-btn
                                 >
-                                <v-btn text small color="secondary">Edit</v-btn>
+                                <v-btn
+                                    text
+                                    small
+                                    color="secondary"
+                                    @click="showEditTicketDialog(item)"
+                                    >Edit</v-btn
+                                >
                                 <v-btn
                                     text
                                     small
@@ -48,13 +65,50 @@
             @confirm-delete="deleteTicket()"
             @cancel-delete="showDeleteDialog = false"
         />
+        <v-dialog v-model="addNotedialog" max-width="400">
+            <v-card>
+                <v-card-title>
+                    <v-spacer></v-spacer>
+                    <v-icon class="float-right" @click="addNotedialog = false"
+                        >fa-window-close</v-icon
+                    >
+                </v-card-title>
+                <v-card-text>
+                    <create-notes
+                        @note-created="addNotedialog = false"
+                        :ticket="TempTicketForAddNote"
+                    />
+                </v-card-text>
+            </v-card>
+        </v-dialog>
+        <v-dialog v-model="editTicketDialog" max-width="400">
+            <v-card>
+                <v-card-title>
+                    <v-spacer></v-spacer>
+                    <v-icon
+                        class="float-right"
+                        @click="editTicketDialog = false"
+                        >fa-window-close</v-icon
+                    >
+                </v-card-title>
+                <v-card-text>
+                    <edit-ticket
+                        @ticket-updated="confirmTicketUpdated()"
+                        :ticket="tempTicketForEdit"
+                    />
+                </v-card-text>
+            </v-card>
+        </v-dialog>
     </div>
 </template>
 <script>
 import deleteDialog from '@/components/Interface/DeleteDialog';
+import createNotes from '@/components/Tickets/Notes/Create';
+import editTicket from '@/components/Tickets/Edit';
+import moment from 'moment';
 
 export default {
-    components: { deleteDialog },
+    components: { deleteDialog, createNotes, editTicket },
     mounted() {
         this.requestTickets();
     },
@@ -62,14 +116,18 @@ export default {
         return {
             headers: [
                 { text: '#', align: 'left', value: 'id_ticket' },
-                { text: 'Description', value: 'description' },
-                { text: 'Employee(s)', value: 'employees' },
+                { text: 'Subject', value: 'subject' },
+                { text: 'Employee(s)', value: 'all_employees' },
                 { text: 'Date', value: 'create_at' },
                 { text: 'Status', value: 'status' },
                 { text: 'Actions', value: 'actions' }
             ],
             showDeleteDialog: false,
-            tempTicketToDelete: {}
+            tempTicketToDelete: {},
+            addNotedialog: false,
+            TempTicketForAddNote: '',
+            editTicketDialog: false,
+            tempTicketForEdit: ''
         };
     },
     methods: {
@@ -97,6 +155,21 @@ export default {
                 .catch(error => {
                     console.log(error);
                 });
+        },
+        showAddNoteDialog(ticket) {
+            this.TempTicketForAddNote = ticket;
+            this.addNotedialog = true;
+        },
+        showEditTicketDialog(ticket) {
+            this.tempTicketForEdit = ticket;
+            this.editTicketDialog = true;
+        },
+        confirmTicketUpdated() {
+            this.requestTickets()
+            this.editTicketDialog = false;
+        },
+        parseDate(date) {
+            return moment(date).format('DD/MM/YYYY');
         }
     }
 };

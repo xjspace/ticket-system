@@ -16,8 +16,17 @@
                             :headers="headers"
                             :items="$store.getters['employees/getEmployees']"
                             :items-per-page="5"
-                        ></v-data-table
-                    ></v-col>
+                        >
+                            <template v-slot:item.create_at="{ item }">
+                                {{
+                                    parseDate(
+                                        item.create_at,
+                                        'DD/MM/YYYY'
+                                    )
+                                }}
+                            </template>
+                        </v-data-table></v-col
+                    >
                 </v-row>
             </v-card-text>
         </v-card>
@@ -30,6 +39,7 @@
 </template>
 <script>
 import createEmployeeDialog from '@/components/Employees/CreateDialog';
+import moment from 'moment';
 
 export default {
     components: { createEmployeeDialog },
@@ -63,9 +73,12 @@ export default {
                 this.$store.commit('employees/SET_EMPLOYEES', response.data);
             });
         },
-        confirmEmployeeCreation(){
-            this.showCreationEmployeDialog = false
-            this.requestEmployees()
+        confirmEmployeeCreation() {
+            this.showCreationEmployeDialog = false;
+            this.requestEmployees();
+        },
+        parseDate(date, format) {
+            return moment(date).format(format);
         }
     }
 };

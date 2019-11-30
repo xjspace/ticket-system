@@ -2,7 +2,13 @@
     <div>
         <v-card>
             <v-card-title primary-title>
-                <v-btn color="success" outlined class="mr-5">Edit</v-btn>
+                <v-btn
+                    color="success"
+                    outlined
+                    class="mr-5"
+                    @click="showEditTicketDialog"
+                    >Edit</v-btn
+                >
                 <v-btn color="error" @click="deleteTicket()" outlined
                     >Delete</v-btn
                 >
@@ -12,12 +18,21 @@
                     <v-col cols="2">
                         <p class="font-weight-bold">Ticket #</p>
                         <p class="font-weight-bold">Subject</p>
+                        <p class="font-weight-bold">status</p>
                         <p class="font-weight-bold">Date</p>
                     </v-col>
                     <v-col cols="10">
                         <p>{{ ticket.id_ticket }}</p>
                         <p>{{ ticket.subject }}</p>
-                        <p>{{ ticket.create_at }}</p>
+                        <p>{{ ticket.status }}</p>
+                        <p>
+                            {{
+                                parseTimeStamp(
+                                    ticket.create_at,
+                                    'DD/MM/YY h:mm:ss A'
+                                )
+                            }}
+                        </p>
                     </v-col>
                     <v-col cols="12">
                         <p class="font-weight-bold">Description</p>
@@ -40,7 +55,7 @@
                 <v-tab-item>
                     <v-card flat :loading="loadingTimeEntries">
                         <v-card-text>
-                            <time-entries :ticket="ticket"/>
+                            <time-entries :ticket="ticket" />
                         </v-card-text>
                     </v-card>
                 </v-tab-item>
@@ -83,6 +98,15 @@
                 </v-tab-item>
             </v-tabs-items>
         </v-card>
+        <v-card class="mt-2">
+            <v-card-title primary-title>
+                Notes
+            </v-card-title>
+            <v-card-text>
+                <notes-list />
+                <create-notes @note-created="requestNotes()" :ticket="ticket" />
+            </v-card-text>
+        </v-card>
         <delete-dialog
             title="Remove"
             message="Are you sure you want to remove this employee?"
@@ -98,19 +122,49 @@
             :show="showAssignEmployeeToticketDialog"
             :ticket="ticket"
         />
+        <v-dialog v-model="editTicketDialog" max-width="400">
+            <v-card>
+                <v-card-title>
+                    <v-spacer></v-spacer>
+                    <v-icon
+                        class="float-right"
+                        @click="editTicketDialog = false"
+                        >fa-window-close</v-icon
+                    >
+                </v-card-title>
+                <v-card-text>
+                    <edit-ticket
+                        @ticket-updated="confirmTicketUpdated()"
+                        :ticket="tempTicketForEdit"
+                    />
+                </v-card-text>
+            </v-card>
+        </v-dialog>
     </div>
 </template>
 <script>
 import deleteDialog from '@/components/Interface/DeleteDialog';
 import assignEmployeeToTicket from '@/components/Tickets/AssignEmployeeToTicket';
-import timeEntries from '@/components/Tickets/TimeEntries'
+import timeEntries from '@/components/Tickets/TimeEntries';
+import notesList from '@/components/Tickets/Notes/List';
+import createNotes from '@/components/Tickets/Notes/Create';
+import editTicket from '@/components/Tickets/Edit';
+import moment from 'moment';
 
 export default {
-    components: { deleteDialog, assignEmployeeToTicket,timeEntries },
+    components: {
+        deleteDialog,
+        assignEmployeeToTicket,
+        timeEntries,
+        notesList,
+        createNotes,
+        editTicket
+    },
     async mounted() {
-        this.loadingTimeEntries = true
+        this.loadingTimeEntries = true;
         await this.requestTicket();
-        this.requestTicketTimeEntries()
+        this.requestTicketTimeEntries();
+        this.requestNotes();
     },
     data() {
         return {
@@ -125,13 +179,19 @@ export default {
             showRemoveEmployeDialog: false,
             showAssignEmployeeToticketDialog: false,
             tempEmployeForRemove: {},
-            loadingTimeEntries: false
+            loadingTimeEntries: false,
+            editTicketDialog: false,
+            tempTicketForEdit: ''
         };
     },
     methods: {
         toggleRemoveEmployeDialog(employee) {
             this.showRemoveEmployeDialog = true;
             this.tempEmployeForRemove = employee;
+        },
+        showEditTicketDialog() {
+            this.tempTicketForEdit = this.ticket;
+            this.editTicketDialog = true;
         },
         confirmRemoveEmploye() {
             this.showRemoveEmployeDialog = false;
@@ -168,7 +228,7 @@ export default {
                 });
         },
         requestTicketTimeEntries() {
-            this.loadingTimeEntries = true
+            this.loadingTimeEntries = true;
             this.$store
                 .dispatch('tickets/getTimeEntries', this.ticket.id_ticket)
                 .then(response => {
@@ -176,11 +236,13 @@ export default {
                         'tickets/SET_TIME_ENTRIES',
                         response.data
                     );
-                }).catch(error=>{
-                    console.log(error)
-                }).finally(()=>{
-                    this.loadingTimeEntries = false
                 })
+                .catch(error => {
+                    console.log(error);
+                })
+                .finally(() => {
+                    this.loadingTimeEntries = false;
+                });
         },
         deleteTicket() {
             let request = confirm('Are you sure you want delete this ticket ?');
@@ -194,6 +256,23 @@ export default {
                         console.log(error);
                     });
             }
+        },
+        parseTimeStamp(timeStamp, format) {
+            return moment(timeStamp).format(format);
+        },
+        requestNotes() {
+            this.$store
+                .dispatch('notes/get')
+                .then(response => {
+                    this.$store.commit('notes/SET_NOTES', response.data);
+                })
+                .catch(error => {
+                    console.log(error);
+                });
+        },
+        confirmTicketUpdated(){
+            this.requestTicket()
+            this.editTicketDialog = false
         }
     }
 };
