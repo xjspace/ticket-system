@@ -74,7 +74,7 @@ $ git clone https://github.com/itsalb3rt/ticket-system-api.git
 ```
 2 – Run
 ```bash
-docker-compose up –build
+$ docker-compose up --build
 ```
 :tada: Now you API is running on http://localhost:5018/
 
