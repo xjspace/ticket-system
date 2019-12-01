@@ -51,7 +51,7 @@ All users can create notes in tickets, this is like a "comments" for more inform
 
 1 – Clone repository
 ```bash
-$ https://github.com/itsalb3rt/ticket-system.git
+$ git clone https://github.com/itsalb3rt/ticket-system.git
  ```
 
 2 – Prepare container 
@@ -70,7 +70,7 @@ $ docker run -it -p 5017:8080 --rm ticket_system_app/ticket_system_app
 
 1 – Clone this repository
 ```bash
-$ https://github.com/itsalb3rt/ticket-system-api.git
+$ git clone https://github.com/itsalb3rt/ticket-system-api.git
 ```
 2 – Run
 ```bash
@@ -103,7 +103,7 @@ The application is developed with vuejs, vuex, vue router, vuetify and other vue
 
 1 – Clone repository
 ```bash
-$ https://github.com/itsalb3rt/ticket-system.git
+$ git clone https://github.com/itsalb3rt/ticket-system.git
  ```
 
 2 – Install dependencies
@@ -134,7 +134,7 @@ The API is developed in PHP with some Symfony components and third-party librari
 
 1 – Clone this repository in your php environment
 ```bash
-$ https://github.com/itsalb3rt/ticket-system-api.git
+$ git clone https://github.com/itsalb3rt/ticket-system-api.git
 
 ```
 2 – Install all dependencies
