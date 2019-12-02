@@ -21,7 +21,7 @@
                                 {{ parseDate(item.create_at, 'DD/MM/YYYY') }}
                             </template>
                             <template v-slot:item.actions="{ item }">
-                                <v-btn text small color="secondary">View</v-btn>
+                                <v-btn text small color="secondary" @click="openViewEmployeeInformationDialog(item)">View</v-btn>
                                 <v-btn
                                     text
                                     small
@@ -53,14 +53,22 @@
                 />
             </v-dialog>
         </v-row>
+        <v-dialog
+            v-model="viewEmployeeDialog"
+            max-width="400"
+            transition="dialog-transition"
+        >
+            <view-employee-information @close-dialog="viewEmployeeDialog = false" :employee="employee"/>
+        </v-dialog>
     </div>
 </template>
 <script>
 import MaintenanceFormEmployees from '@/components/Employees/MaintenanceForm';
+import viewEmployeeInformation from '@/components/Employees/ViewEmployeeInformation';
 import moment from 'moment';
 
 export default {
-    components: { MaintenanceFormEmployees },
+    components: { MaintenanceFormEmployees, viewEmployeeInformation },
     mounted() {
         this.requestEmployees();
     },
@@ -76,7 +84,9 @@ export default {
                 { text: 'Role', value: 'role' },
                 { text: 'Actions', value: 'actions', sortable: false }
             ],
-            showCreationEmployeDialog: false
+            showCreationEmployeDialog: false,
+            employee:{},
+            viewEmployeeDialog:false
         };
     },
     methods: {
@@ -85,6 +95,10 @@ export default {
         },
         openCreationEmployeDialog() {
             this.showCreationEmployeDialog = true;
+        },
+        openViewEmployeeInformationDialog(employee){
+            this.employee = employee;
+            this.viewEmployeeDialog = true;
         },
         requestEmployees() {
             this.$store.dispatch('employees/get').then(response => {
